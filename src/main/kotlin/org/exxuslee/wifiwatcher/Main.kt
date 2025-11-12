@@ -19,6 +19,7 @@ fun main() {
         println("Welcome to WiFi Watcher!")
         val telegramService = TelegramService()
         var lastSeenSsids: Set<String> = emptySet()
+        var timeout: Long
         while (isActive) {
             try {
                 val current = scanNetworks()
@@ -31,16 +32,17 @@ fun main() {
                 val is1 = ssid in current
                 val is2 = ssid !in lastSeenSsids
                 val is3 = lastSeenSsids.isNotEmpty()
+                timeout = if (is1) 1200_000L else 60_000L
                 if (is1 && is2 && is3) {
                     println("${LocalDateTime.now()} — $ssid detected! Sending Telegram...")
-                    telegramService.sendMessage("💡 свiтло е 🔌", adminChatId)
-                    telegramService.sendMessage("💡 свiтло е 🔌", userChatId)
+                    telegramService.sendMessage("💡 $current", adminChatId)
                 }
                 lastSeenSsids = current
             } catch (e: Exception) {
                 println("Error: ${e.message}")
+                timeout = 60_000L
             }
-            delay(60_000)
+            delay(timeout)
         }
     }
 }
