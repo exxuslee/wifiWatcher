@@ -15,6 +15,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
     implementation("io.github.cdimascio:dotenv-kotlin:6.4.1")
     implementation("org.telegram:telegrambots-client:9.2.0")
+    implementation("org.mapdb:mapdb:3.0.9")
     testImplementation(kotlin("test"))
 }
 

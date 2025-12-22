@@ -3,7 +3,8 @@ package org.exxuslee.wifiwatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.runBlocking
-import org.exxuslee.wifiwatcher.data.TelegramService
+import org.exxuslee.wifiwatcher.data.local.Storage
+import org.exxuslee.wifiwatcher.data.remote.TelegramService
 import org.exxuslee.wifiwatcher.extension.dotenv
 import org.exxuslee.wifiwatcher.extension.getRequiredEnv
 import java.io.BufferedReader
@@ -17,8 +18,8 @@ private val userChatId = getRequiredEnv("USER_CHAT_ID", dotenv)
 fun main() {
     runBlocking {
         println("Welcome to WiFi Watcher!")
+        val storage = Storage()
         val telegramService = TelegramService()
-        var lastSeenSsids: Set<String> = emptySet()
         var timeout: Long
         while (isActive) {
             try {
@@ -30,14 +31,13 @@ fun main() {
                 }
                 println("${LocalDateTime.now()} — Scanned SSIDs: $current")
                 val is1 = ssid in current
-                val is2 = ssid !in lastSeenSsids
-                val is3 = lastSeenSsids.isNotEmpty()
+                val is2 = ssid !in storage.get()
                 timeout = if (is1) 1200_000L else 60_000L
-                if (is1 && is2 && is3) {
+                if (is1 && is2) {
                     println("${LocalDateTime.now()} — $ssid detected! Sending Telegram...")
                     telegramService.sendMessage("💡 $current", adminChatId)
                 }
-                lastSeenSsids = current
+                storage.putBatch(current)
             } catch (e: Exception) {
                 println("Error: ${e.message}")
                 timeout = 60_000L

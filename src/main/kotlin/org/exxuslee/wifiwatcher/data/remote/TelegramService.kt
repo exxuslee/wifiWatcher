@@ -1,4 +1,4 @@
-package org.exxuslee.wifiwatcher.data
+package org.exxuslee.wifiwatcher.data.remote
 
 import org.exxuslee.wifiwatcher.extension.dotenv
 import org.exxuslee.wifiwatcher.extension.getRequiredEnv
