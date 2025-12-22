@@ -22,8 +22,8 @@ class Storage {
         val old = get()
         val toRemove = old - values
         val toAdd = values - old
-        if (toRemove.isNotEmpty()) set.removeAll(toRemove)
-        if (toAdd.isNotEmpty()) set.addAll(toAdd)
+        set.removeAll(toRemove)
+        set.addAll(toAdd)
         if (toRemove.isNotEmpty() || toAdd.isNotEmpty()) db.commit()
     }
 
