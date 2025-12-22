@@ -11,7 +11,8 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.time.LocalDateTime
 
-private val ssid = getRequiredEnv("SSID", dotenv)
+private val ssid1 = getRequiredEnv("SSID", dotenv)
+private val ssid2 = getRequiredEnv("SSID", dotenv)
 private val adminChatId = getRequiredEnv("ADMIN_CHAT_ID", dotenv)
 private val userChatId = getRequiredEnv("USER_CHAT_ID", dotenv)
 
@@ -30,11 +31,11 @@ fun main() {
                     continue
                 }
                 println("${LocalDateTime.now()} — Scanned SSIDs: $current")
-                val is1 = ssid in current
-                val is2 = ssid !in storage.get()
+                val is1 = ssid1 in current || ssid2 in current
+                val is2 = ssid1 !in storage.get() || ssid2 !in storage.get()
                 timeout = if (is1) 1200_000L else 60_000L
                 if (is1 && is2) {
-                    println("${LocalDateTime.now()} — $ssid detected! Sending Telegram...")
+                    println("${LocalDateTime.now()} — $ssid1 $ssid2 detected! Sending Telegram...")
                     telegramService.sendMessage("💡 $current", adminChatId)
                 }
                 storage.putBatch(current)

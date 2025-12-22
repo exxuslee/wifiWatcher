@@ -24,6 +24,7 @@ class TelegramService {
         } catch (e: Exception) {
             println("❌ sendMessage: ${e.message}")
             e.printStackTrace()
+            throw e
         }
     }
 
